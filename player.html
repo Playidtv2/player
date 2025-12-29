@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>MoviesDoofree Popup Player</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: system-ui;
+    background: #000;
+}
+
+/* Overlay */
+#popupOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#popupBox {
+    position: relative;
+    width: 95%;
+    max-width: 1600px;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+video {
+    width: 100%;
+    height: auto;
+    background: #000;
+}
+
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    font-size: 22px;
+    background: rgba(255,255,255,.2);
+    color: #fff;
+    cursor: pointer;
+    z-index: 10000;
+}
+</style>
+</head>
+<body>
+
+<div id="popupOverlay">
+  <div id="popupBox">
+    <button class="closeBtn" id="closeBtn">×</button>
+    <video id="video" controls autoplay></video>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+const VIDEO_URL = "https://m3u8haha.com/movie/M15600.mp4/playlist.m3u8";
+
+/* 🔧 เปลี่ยนเป็นโดเมน worker ของคุณ */
+const PROXY = "https://YOUR-WORKER.workers.dev/?url=";
+
+const video = document.getElementById("video");
+const closeBtn = document.getElementById("closeBtn");
+
+const proxyUrl = PROXY + encodeURIComponent(VIDEO_URL);
+
+if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(proxyUrl);
+    hls.attachMedia(video);
+    window.hls = hls;
+} else {
+    video.src = proxyUrl;
+}
+
+closeBtn.onclick = () => {
+    document.getElementById("popupOverlay").remove();
+    if (window.hls) window.hls.destroy();
+    video.pause();
+};
+</script>
+
+</body>
+</html>
